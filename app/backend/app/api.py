@@ -21,10 +21,30 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-  client = MongoClient('localhost', port=27017)
-  db = client.saltstack
-  minions = [ {"key1": "minionn1"}, {"key2": "minionn2"}, {"key3": "minionn3"}, {"key4": "minionn4"} ]
-  db.minions.insert_many(minions)
+
+	try:
+		# try to instantiate a client instance
+		client = MongoClient(
+			host = [ "172.21.0.2:27017" ],
+			serverSelectionTimeoutMS = 3000, # 3 second timeout
+			username = "root",
+			password = "example",
+		)
+
+		db = client.saltstack
+		# datos = db.minions.find()
+		# for docs in datos:
+		# 	print(docs)
+		
+	except errors.ServerSelectionTimeoutError as err:
+		# set the client to 'None' if exception
+		client = None
+		# database_names = []
+
+		# catch pymongo.errors.ServerSelectionTimeoutError
+		print ("pymongo ERROR:", err)
+
+	
 
 @app.on_event("shutdown")
 def shutdown_event():
@@ -36,5 +56,18 @@ async def read_root() -> str:
 
 @app.get("/minions", tags=["minions"])
 async def get_minions():
-  data = db.minions.find()
-  return data
+	print("Geting gateways")
+	client = MongoClient(
+			host = [ "172.21.0.2:27017" ],
+			serverSelectionTimeoutMS = 3000, # 3 second timeout
+			username = "root",
+			password = "example",
+		)
+	db = client.saltstack
+
+	data = db.minions.find()
+
+	for doc in data:
+		print("\n", doc)
+	
+	return data
