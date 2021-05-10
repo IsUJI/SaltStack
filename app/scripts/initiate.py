@@ -49,6 +49,7 @@ for key in minions:
   else:
     connection = False
   data.append({
+    "_id": key,
     "name": key, 
     "created": now.strftime("%d/%m/%Y, %H:%M:%S"), # string format of time
     "updated": now.strftime("%d/%m/%Y, %H:%M:%S"),

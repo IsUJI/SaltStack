@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+# from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 
 
@@ -55,7 +56,7 @@ async def read_root() -> str:
 	return "Welcome to the app"
 
 @app.get("/minions", tags=["minions"])
-async def get_minions():
+async def get_minions(request: Request):
 	print("Geting gateways")
 	client = MongoClient(
 			host = [ "172.21.0.2:27017" ],
@@ -65,9 +66,12 @@ async def get_minions():
 		)
 	db = client.saltstack
 
-	data = db.minions.find()
 
-	for doc in data:
-		print("\n", doc)
+	data = db.minions.find()
+	# minions = []
+
+	# for doc in db.minions.find():
+	# # 	minions.append(doc)
+	# 	print("\n", doc)
 	
 	return data
