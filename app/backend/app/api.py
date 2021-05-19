@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-# from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
+
 
 
 app = FastAPI()
@@ -11,7 +12,6 @@ origins = [
 	"localhost:3000"
 ]
 
-
 app.add_middleware(
 	CORSMiddleware,
 	allow_origins=origins,
@@ -20,30 +20,32 @@ app.add_middleware(
 	allow_headers=["*"]
 )
 
-@app.on_event("startup")
-async def startup_event():
+# @app.on_event("startup")
+# async def startup_event():
 
-	try:
-		# try to instantiate a client instance
-		client = MongoClient(
-			host = [ "172.21.0.2:27017" ],
-			serverSelectionTimeoutMS = 3000, # 3 second timeout
-			username = "root",
-			password = "example",
-		)
+	# try:
+	# 	# try to instantiate a client instance
+	# 	# client = MongoClient(
+	# 	# 	host = [ "172.21.0.2:27017" ],
+	# 	# 	serverSelectionTimeoutMS = 3000, # 3 second timeout
+	# 	# 	username = "root",
+	# 	# 	password = "example",
+	# 	# )
+	# 	# client = AsyncIOMotorClient('172.21.0.2', 27017)
+	# 	# client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017')
 
-		db = client.saltstack
-		# datos = db.minions.find()
-		# for docs in datos:
-		# 	print(docs)
+	# 	db = client.saltstack
+	# 	# datos = db.minions.find()
+	# 	# for docs in datos:
+	# 	# 	print(docs)
 		
-	except errors.ServerSelectionTimeoutError as err:
-		# set the client to 'None' if exception
-		client = None
-		# database_names = []
+	# except errors.ServerSelectionTimeoutError as err:
+	# 	# set the client to 'None' if exception
+	# 	client = None
+	# 	# database_names = []
 
-		# catch pymongo.errors.ServerSelectionTimeoutError
-		print ("pymongo ERROR:", err)
+	# 	# catch pymongo.errors.ServerSelectionTimeoutError
+	# 	print ("pymongo ERROR:", err)
 
 	
 
@@ -58,6 +60,7 @@ async def read_root() -> str:
 @app.get("/minions", tags=["minions"])
 async def get_minions(request: Request):
 	print("Geting gateways")
+
 	client = MongoClient(
 			host = [ "172.21.0.2:27017" ],
 			serverSelectionTimeoutMS = 3000, # 3 second timeout
@@ -66,12 +69,11 @@ async def get_minions(request: Request):
 		)
 	db = client.saltstack
 
-
 	data = db.minions.find()
-	# minions = []
+	# data = await db.minions.find().to_list(100)
+	minions = []
 
-	# for doc in db.minions.find():
-	# # 	minions.append(doc)
-	# 	print("\n", doc)
-	
-	return data
+	for doc in data:
+		minions.append(doc)
+
+	return minions
