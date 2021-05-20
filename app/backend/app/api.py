@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
+import paramiko
 
 
 
@@ -20,38 +21,36 @@ app.add_middleware(
 	allow_headers=["*"]
 )
 
-# @app.on_event("startup")
-# async def startup_event():
+@app.on_event("startup")
+async def startup_event():
 
-	# try:
-	# 	# try to instantiate a client instance
-	# 	# client = MongoClient(
-	# 	# 	host = [ "172.21.0.2:27017" ],
-	# 	# 	serverSelectionTimeoutMS = 3000, # 3 second timeout
-	# 	# 	username = "root",
-	# 	# 	password = "example",
-	# 	# )
-	# 	# client = AsyncIOMotorClient('172.21.0.2', 27017)
-	# 	# client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017')
+	try:
+		# Building a tunnel with salt-master and initializaing the gateways on the database
 
-	# 	db = client.saltstack
-	# 	# datos = db.minions.find()
-	# 	# for docs in datos:
-	# 	# 	print(docs)
+		print('Building the tunnel\n')
+		host = "172.21.0.3"
+		port = 22
+		username = "root"
+		password = "example"
+
+		command = "python3 initiate.py"
+
+		ssh = paramiko.SSHClient()
+		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		ssh.connect(host, port, username, password)
+
+		stdin, stdout, stderr = ssh.exec_command(command)
+		lines = stdout.readlines()
+		print(lines)
 		
-	# except errors.ServerSelectionTimeoutError as err:
-	# 	# set the client to 'None' if exception
-	# 	client = None
-	# 	# database_names = []
-
-	# 	# catch pymongo.errors.ServerSelectionTimeoutError
-	# 	print ("pymongo ERROR:", err)
+	except Exception as excep:
+		print(excep)
 
 	
 
-@app.on_event("shutdown")
-def shutdown_event():
-  client.close()
+# @app.on_event("shutdown")
+# def shutdown_event():
+#   client.close()
 
 @app.get("/", tags = ["root"])
 async def read_root() -> str:

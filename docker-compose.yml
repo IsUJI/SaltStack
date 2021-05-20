@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile.master
     depends_on: 
       - mongodb
+    ports: 
+      - 22:22
 
   salt-minion:
     build:
@@ -24,3 +26,4 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     ports: 
       - 27017:27017
+

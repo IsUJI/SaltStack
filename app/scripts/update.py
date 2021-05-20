@@ -36,36 +36,29 @@ if len(sys.argv) == 2:
   try:
     key = sys.argv[1]
     minion = {}
-    print('Gateway name: ' + key)
+    print('\nUpdating the gateway ' + key)
 
-    print('Searching for the gateway...')
+    print('\nSearching for the gateway...')
     docs = db.minions.find({"name": str(key)})
 
     for doc in docs:
-      minion = str(doc)
-      print('Minion: ' + minion)
+      minion = doc
 
-    print('Checking the connection')
+    print('\Minion:')  
+    print(minion)
+
     connection = local.cmd(key, 'test.ping')
-    print(connection)
-
     memory = local.cmd(key, 'disk.usage')
-    print(memory)
 
-    if connection[key] == 'True':
+    if connection[key]:
+      print('Connection es True')
       last_connection = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
     else:
+      print('Connection es False')
       last_connection = minion['status']['last_connected']
 
-      print('Id' + minion['_id'])
-
-      print('name' + minion['name'])
-      print('created' + minion['created'])
-      print('updated' + datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
-      print('status' + minion['status'])
-
-    print('Modifying the value')
-    valor = {
+    print('Modifying the value...')
+    value = {
       "_id": minion['_id'],
       "name": minion['name'], 
       "created": minion['created'],
@@ -76,21 +69,66 @@ if len(sys.argv) == 2:
         "last_connected": last_connection
       }   
     }
-    print('New value: ' + valor)
 
-  except Exception as inst:
-    print("Couldn't find the gateway")
-    print(inst)
+    print('\nValue:')
+    print(value)
 
+    print('\nUpdating on database...')
+    update = db.minions.update({"_id" : key}, value)
+    print('\nUpdated gateway with value: ')
+    print(update)
+
+  except Exception as exc:
+    print("Couldn't update the gateways")
+    print(exc)
+
+elif len(sys.argv) == 1:
   try:
-    print(valor)
-    print('Updating gateway...')
-    db.minions.update_one({"_id" : key}, valor)
-    print("Updated gateway with value: " + valor)
+    minions = []
+    print('Updating ALL the gateways\n')
 
-  except Exception as inst:
-    print("Couldn't update the gateway")
-    print(inst)
+    print('Searching for the gateways...\n')
+    docs = db.minions.find()
+
+    for doc in docs:
+      minions.append(doc)
+
+    for minion in minions:
+
+      key = minion['_id']
+
+      connection = local.cmd(key, 'test.ping')
+      memory = local.cmd(key, 'disk.usage')
+
+      if connection[key]:
+        last_connection = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+      else:
+        last_connection = minion['status']['last_connected']
+
+      print('Modifying the value...')
+      value = {
+        "_id": minion['_id'],
+        "name": minion['name'], 
+        "created": minion['created'],
+        "updated": datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+        "status": {
+          "connected": connection,
+          "disk": memory[key],
+          "last_connected": last_connection
+        }   
+      }
+
+      print('\nValue:')
+      print(value)
+
+      print('\nUpdating a gateway on database...')
+      update = db.minions.update({"_id" : key}, value)
+      print('\nUpdated gateway: ')
+      print(update)
+
+  except Exception as exc:
+    print("Couldn't update the gateways")
+    print(exc)
   
 else:
   print("WRONG number of arguments")
