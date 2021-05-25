@@ -20,6 +20,20 @@ const useStyles = makeStyles((theme) => ({
 		boxShadow: theme.shadows[5],
 		padding: theme.spacing(2, 4, 3),
 	},
+
+	button: {
+		marginTop: 5,
+		borderRadius: 10,
+		padding: 10,
+		fontSize: 18,
+	},
+
+	card: { 
+		padding: 15,
+		borderColor: 'rgb(41, 210, 41)', 
+		borderRadius: '10', 
+		borderWidth: 'medium', 
+	}
 }));
 
 export default function MinionList() {
@@ -65,23 +79,19 @@ export default function MinionList() {
 		  </div>
 		);
 
-	
-
-	
-
-
 	return (
 		<MinionsContext.Provider value={{ minions, getMinions }}>
 			<div>
 				<Grid container spacing={5}>
 					{minions.map((minion) => (
 						<Grid item xs={3} key={minion._id}>
-							<Card variant="outlined" style={{ borderColor: 'rgb(41, 210, 41)', borderRadius: '10', borderWidth: 'medium' }}>
+							<Card variant="outlined" className={classes.card}>
 								<CardContent>
-									{minion._id}
+									<h2>{minion._id}</h2>
+									
 								</CardContent>
 								<CardActions>
-									<button type="button" onClick={() => selectMinion(minion)}>
+									<button className={classes.button} type="button" onClick={() => selectMinion(minion)}>
 										DETAILS
 									</button>
 									<Modal

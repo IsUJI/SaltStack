@@ -21,12 +21,12 @@ RUN apt-get update -y && \
 RUN sed -i "s|#auto_accept: False|auto_accept: True|g" /etc/salt/master
 
 RUN mkdir p /master
-# ADD script.py /master
+WORKDIR /master
 ADD ./app/scripts/ /master
+ADD ./master-comands.sh /master
+RUN ["chmod", "-x", "./master-comands.sh"]
 
 EXPOSE 22
-RUN service ssh start
-
-WORKDIR /master
 
 ENTRYPOINT ["salt-master", "-l", "debug"]
+# ENTRYPOINT [ "./master-comands.sh" ]

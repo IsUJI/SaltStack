@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
 import DetailsProvider from './DetailsContext';
-import MinionList from './Minion/MinionList'
+import Body from './Layout/Body';
+import Header from './Layout/Header';
 
 class App extends Component {
   render() {
     return (
       <DetailsProvider>
-        <div className="body" style={{marginLeft: '25%'}}>
-          <MinionList />
+        <div style={{marginLeft: '22%'}}>
+          <Header />
+          <Body />
         </div>
       </DetailsProvider>
     );
