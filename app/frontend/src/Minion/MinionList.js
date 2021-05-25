@@ -70,15 +70,23 @@ export default function MinionList() {
 	};
 
 	const body = (
-		  <div className={classes.paper}>
-		    <h2 id="simple-modal-title">{details.name}</h2>
-		    <p id="simple-modal-description">
-		      Display de los detalles.
-		      {details.created}
-		    </p>
-		  </div>
-		);
-
+		<div className={classes.paper}>
+			<h2 id="simple-modal-title">{details.name}</h2>
+			<p id="simple-modal-description">
+				<label>Created: </label>
+				{details.created}
+				<label>Updated: </label>
+				{details.updated}
+				<label>Status: </label>
+				<label>Connected: </label>
+				{/* {details.status.connected ? "True" : "False"} */}
+				<label>Last Connected: </label>
+				{/* {details.status.last_connected} */}
+				<label>Disk: </label>
+				{/* {details.status.disk['/'].capacity} */}
+			</p>
+		</div>
+	);
 	return (
 		<MinionsContext.Provider value={{ minions, getMinions }}>
 			<div>
@@ -88,7 +96,7 @@ export default function MinionList() {
 							<Card variant="outlined" className={classes.card}>
 								<CardContent>
 									<h2>{minion._id}</h2>
-									
+									<h2>{minion.status.disk['/'].capacity}</h2>	
 								</CardContent>
 								<CardActions>
 									<button className={classes.button} type="button" onClick={() => selectMinion(minion)}>
