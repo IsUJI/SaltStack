@@ -52,9 +52,11 @@ if len(sys.argv) == 2:
 
     if connection[key]:
       print('Connection es True')
+      connected = True
       last_connection = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
     else:
       print('Connection es False')
+      connected = False
       last_connection = minion['status']['last_connected']
 
     print('Modifying the value...')
@@ -64,7 +66,7 @@ if len(sys.argv) == 2:
       "created": minion['created'],
       "updated": datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
       "status": {
-        "connected": connection,
+        "connected": connected,
         "disk": memory[key],
         "last_connected": last_connection
       }   
@@ -101,8 +103,10 @@ elif len(sys.argv) == 1:
       memory = local.cmd(key, 'disk.usage')
 
       if connection[key]:
+        connected = True
         last_connection = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
       else:
+        connected = False
         last_connection = minion['status']['last_connected']
 
       print('Modifying the value...')
@@ -112,7 +116,7 @@ elif len(sys.argv) == 1:
         "created": minion['created'],
         "updated": datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
         "status": {
-          "connected": connection,
+          "connected": connected,
           "disk": memory[key],
           "last_connected": last_connection
         }   

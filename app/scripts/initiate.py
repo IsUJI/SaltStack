@@ -44,7 +44,7 @@ minions = local.cmd('*', 'test.ping')
 for key in minions:
   now = datetime.now() # current date and time
   memory = local.cmd(key, 'disk.usage')
-  if minions[key] == 'True':
+  if (minions[key]):
     connection = True
   else:
     connection = False

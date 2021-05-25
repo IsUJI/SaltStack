@@ -58,11 +58,10 @@ async def read_root() -> str:
 
 @app.get("/minions", tags=["minions"])
 async def get_minions(request: Request):
-	print("Geting gateways")
-
+	
 	client = MongoClient(
 			host = [ "172.21.0.2:27017" ],
-			serverSelectionTimeoutMS = 3000, # 3 second timeout
+			serverSelectionTimeoutMS = 3000,
 			username = "root",
 			password = "example",
 		)
@@ -76,3 +75,23 @@ async def get_minions(request: Request):
 		minions.append(doc)
 
 	return minions
+
+@app.get("/minions/{id}", tags=["minion"])
+async def get_minion(id: str):
+	
+	client = MongoClient(
+			host = [ "172.21.0.2:27017" ],
+			serverSelectionTimeoutMS = 3000,
+			username = "root",
+			password = "example",
+		)
+	db = client.saltstack
+
+	data = db.minions.find({"_id": id})
+
+	for doc in data:
+		minion = doc
+
+	return minion
+
+	raise HTTPException(status_code=404, detail=f"Todo with id {id} not found.")

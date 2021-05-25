@@ -24,6 +24,9 @@ RUN mkdir p /master
 # ADD script.py /master
 ADD ./app/scripts/ /master
 
+EXPOSE 22
+RUN service ssh start
+
 WORKDIR /master
 
 ENTRYPOINT ["salt-master", "-l", "debug"]
