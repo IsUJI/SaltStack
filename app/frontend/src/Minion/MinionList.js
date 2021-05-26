@@ -3,6 +3,7 @@ import axios from 'axios';
 import { DetailsContext } from '../DetailsContext';
 import { Modal, Grid, Card, CardContent, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import MinionDetails from './MinionDetails';
 
 
 const MinionsContext = createContext({
@@ -10,36 +11,33 @@ const MinionsContext = createContext({
 })
 
 const useStyles = makeStyles((theme) => ({
-	paper: {
-		position: 'absolute',
-		marginTop: '5%',
-		marginLeft: '22%',
-		width: '50%',
-		backgroundColor: theme.palette.background.paper,
-		border: '2px solid #000',
-		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3),
-	},
 
 	button: {
-		marginTop: 5,
-		borderRadius: 10,
-		padding: 10,
+		marginTop: '5px',
+		borderRadius: '10px',
+		padding: '10px',
 		fontSize: 18,
 	},
 
-	card: { 
+	card: {
 		padding: 15,
-		borderColor: 'rgb(41, 210, 41)', 
-		borderRadius: '10', 
-		borderWidth: 'medium', 
+		borderColor: 'rgb(41, 210, 41)',
+		borderRadius: '10px',
+		borderWidth: 'medium',
+	},
+
+	reload: {
+		borderRadius: '10px',
+		marginBottom: '20px',
+		float: 'right',
 	}
+
 }));
 
 export default function MinionList() {
 
 	const classes = useStyles();
-	const { details, setDetails } = useContext(DetailsContext)
+	const { setDetails } = useContext(DetailsContext)
 	const [minions, setMinions] = useState([])
 	const getMinions = async () => {
 		axios.get(`http://localhost:8000/minions`)
@@ -53,42 +51,29 @@ export default function MinionList() {
 		getMinions()
 	}, [])
 
+	const [open, setOpen] = React.useState(false);
+
+	const handleOpen = () => {
+		setOpen(true)
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
 	const selectMinion = minion => {
 		console.log("Minion selected: " + minion._id)
 		setDetails(minion)
 		handleOpen()
 	}
 
-	const [open, setOpen] = React.useState(false);
-
-	const handleOpen = () => {
-	  setOpen(true)
-	};
-
-	const handleClose = () => {
-	  setOpen(false);
-	};
-
-	const body = (
-		<div className={classes.paper}>
-			<h2 id="simple-modal-title">{details.name}</h2>
-			<p id="simple-modal-description">
-				<label>Created: </label>
-				{details.created}
-				<label>Updated: </label>
-				{details.updated}
-				<label>Status: </label>
-				<label>Connected: </label>
-				{/* {details.status.connected ? "True" : "False"} */}
-				<label>Last Connected: </label>
-				{/* {details.status.last_connected} */}
-				<label>Disk: </label>
-				{/* {details.status.disk['/'].capacity} */}
-			</p>
-		</div>
-	);
 	return (
 		<MinionsContext.Provider value={{ minions, getMinions }}>
+			<div className={classes.reload}>
+				<button style={{width: '35px', height: '35px', padding: '2px'}}>
+					<img alt="icono" src="https://e7.pngegg.com/pngimages/365/764/png-clipart-computer-icons-refresh-free-one-button-reload-text-logo-thumbnail.png" style={{width: '28px', height: '28px'}}/>
+				</button>
+			</div>
 			<div>
 				<Grid container spacing={5}>
 					{minions.map((minion) => (
@@ -96,7 +81,7 @@ export default function MinionList() {
 							<Card variant="outlined" className={classes.card}>
 								<CardContent>
 									<h2>{minion._id}</h2>
-									<h2>{minion.status.disk['/'].capacity}</h2>	
+									<h3>{minion.status.disk['/'].capacity}</h3>
 								</CardContent>
 								<CardActions>
 									<button className={classes.button} type="button" onClick={() => selectMinion(minion)}>
@@ -105,10 +90,8 @@ export default function MinionList() {
 									<Modal
 										open={open}
 										onClose={handleClose}
-										aria-labelledby="simple-modal-title"
-										aria-describedby="simple-modal-description"
 									>
-										{body}
+										<MinionDetails />
 									</Modal>
 								</CardActions>
 							</Card>

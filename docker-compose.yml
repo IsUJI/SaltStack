@@ -10,11 +10,11 @@ services:
       - mongodb
     ports: 
       - 22:22
-    environment: 
-      - SUDO_ACCESS=true
-      - PASSWORD_ACCESS=true
-      - USER_PASSWORD=example
-      - USER_NAME=root
+    # environment: 
+    #   - SUDO_ACCESS=true
+    #   - PASSWORD_ACCESS=true
+    #   - USER_PASSWORD=example
+    #   - USER_NAME=root
 
 
   salt-minion:

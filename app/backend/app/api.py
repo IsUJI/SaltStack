@@ -28,9 +28,9 @@ async def startup_event():
 		# Building a tunnel with salt-master and initializaing the gateways on the database
 
 		print('Building the tunnel\n')
-		host = "172.21.0.3"
+		host = "172.29.0.3"
 		port = 22
-		username = "root"
+		username = "master"
 		password = "example"
 
 		command = "python3 initiate.py"
@@ -60,7 +60,7 @@ async def read_root() -> str:
 async def get_minions(request: Request):
 	
 	client = MongoClient(
-			host = [ "172.21.0.2:27017" ],
+			host = [ "172.29.0.2:27017" ],
 			serverSelectionTimeoutMS = 3000,
 			username = "root",
 			password = "example",
@@ -80,7 +80,7 @@ async def get_minions(request: Request):
 async def get_minion(id: str):
 	
 	client = MongoClient(
-			host = [ "172.21.0.2:27017" ],
+			host = [ "172.29.0.2:27017" ],
 			serverSelectionTimeoutMS = 3000,
 			username = "root",
 			password = "example",

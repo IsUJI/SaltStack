@@ -8,7 +8,7 @@ local = salt.client.LocalClient()
 
 # Connection with mongodb
 
-DOMAIN = '172.21.0.2'
+DOMAIN = '172.29.0.2'
 PORT = 27017
 
 try:

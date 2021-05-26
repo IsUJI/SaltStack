@@ -20,13 +20,12 @@ RUN apt-get update -y && \
 
 RUN sed -i "s|#auto_accept: False|auto_accept: True|g" /etc/salt/master
 
-# RUN useradd -ms /bin/bash master
+RUN useradd -m -s /bin/bash -p $(openssl passwd -1 example) master
 
-# USER master
-WORKDIR /master
+WORKDIR /home/master
 
-ADD ./app/scripts/ /master
-ADD ./master-comands.sh /master
+ADD ./app/scripts/ /home/master
+ADD ./master-comands.sh /home/master
 # RUN ["chmod", "-x", "./master-comands.sh"]
 
 EXPOSE 22
